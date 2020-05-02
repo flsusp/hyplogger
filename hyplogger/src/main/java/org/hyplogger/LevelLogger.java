@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 
 public class LevelLogger {
 
-    private static LogChainStep logChainStep;
+    private static LogChain logChain;
 
     public static Log level(Levels level) {
-        return new Log(level, getLogChainStep());
+        return new Log(level, getLogChain());
     }
 
     public static Log debug() {
@@ -26,36 +26,58 @@ public class LevelLogger {
         return level(Levels.ERROR);
     }
 
-    private static LogChainStep getLogChainStep() {
-        if (logChainStep == null) {
-            logChainStep = (level, message, logger) -> level.logTo(logger, message);
+    private static LogChain getLogChain() {
+        if (logChain == null) {
+            logChain = (level, message, logger) -> level.log(logger, message);
         }
-        return logChainStep;
+        return logChain;
     }
 
     public enum Levels {
         DEBUG {
             @Override
-            void logTo(Logger logger, String message) {
+            void log(Logger logger, String message) {
                 logger.debug(message);
+            }
+
+            @Override
+            public boolean isActiveFor(Logger logger) {
+                return logger.isDebugEnabled();
             }
         }, INFO {
             @Override
-            void logTo(Logger logger, String message) {
+            void log(Logger logger, String message) {
                 logger.info(message);
+            }
+
+            @Override
+            public boolean isActiveFor(Logger logger) {
+                return logger.isInfoEnabled();
             }
         }, WARN {
             @Override
-            void logTo(Logger logger, String message) {
+            void log(Logger logger, String message) {
                 logger.warn(message);
+            }
+
+            @Override
+            public boolean isActiveFor(Logger logger) {
+                return logger.isWarnEnabled();
             }
         }, ERROR {
             @Override
-            void logTo(Logger logger, String message) {
+            void log(Logger logger, String message) {
                 logger.error(message);
+            }
+
+            @Override
+            public boolean isActiveFor(Logger logger) {
+                return logger.isErrorEnabled();
             }
         };
 
-        abstract void logTo(Logger logger, String message);
+        abstract void log(Logger logger, String message);
+
+        public abstract boolean isActiveFor(Logger logger);
     }
 }
