@@ -6,17 +6,16 @@ import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 import static org.hyplogger.Conditions.alwaysLog;
-import static org.hyplogger.LogChain.DO_NOTHING;
 
 public class Log {
 
     private final LevelLogger.Levels level;
-    private final LogChain logChain;
+    private final Collection<LogStep> logSteps;
     private final List<Map.Entry<String, ConditionalValue>> attributes = new ArrayList<>();
 
-    public Log(LevelLogger.Levels level, LogChain logChain) {
+    public Log(LevelLogger.Levels level, Collection<LogStep> logSteps) {
         this.level = level;
-        this.logChain = logChain;
+        this.logSteps = logSteps;
     }
 
     public Log subject(Object subject) {
@@ -38,7 +37,9 @@ public class Log {
 
     public void logTo(Logger logger) {
         if (level.isActiveFor(logger)) {
-            logChain.proceedTo(DO_NOTHING, level, buildMessage(), logger);
+            for (LogStep logStep : logSteps) {
+                logStep.execute(level, buildMessage(), logger);
+            }
         }
     }
 

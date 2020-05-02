@@ -2,12 +2,26 @@ package org.hyplogger;
 
 import org.slf4j.Logger;
 
+import java.util.Stack;
+
 public class LevelLogger {
 
-    private static LogChain logChain;
+    private static final Stack<LogStep> logSteps = new Stack<>();
+
+    static {
+        logSteps.push((level, message, logger) -> level.log(logger, message));
+    }
+
+    public static void registerLogStep(LogStep logStep) {
+        logSteps.push(logStep);
+    }
+
+    public static void unregisterLogStep(LogStep logStep) {
+        logSteps.remove(logStep);
+    }
 
     public static Log level(Levels level) {
-        return new Log(level, getLogChain());
+        return new Log(level, logSteps);
     }
 
     public static Log debug() {
@@ -24,13 +38,6 @@ public class LevelLogger {
 
     public static Log error() {
         return level(Levels.ERROR);
-    }
-
-    private static LogChain getLogChain() {
-        if (logChain == null) {
-            logChain = (level, message, logger) -> level.log(logger, message);
-        }
-        return logChain;
     }
 
     public enum Levels {
