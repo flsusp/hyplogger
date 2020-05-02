@@ -20,17 +20,19 @@ public class Log {
     }
 
     public Log subject(Object subject) {
-        attributes.add(entry("subject", alwaysLog(subject)));
-        return this;
+        return with("subject", alwaysLog(subject));
     }
 
     public Log with(String attribute, String message, Object... args) {
-        attributes.add(entry(attribute, alwaysLog(String.format(message, args))));
-        return this;
+        return with(attribute, alwaysLog(String.format(message, args)));
     }
 
     public Log with(String attribute, Object value) {
-        attributes.add(entry(attribute, alwaysLog(value)));
+        return with(attribute, alwaysLog(value));
+    }
+
+    public Log with(String attribute, ConditionalValue conditionalValue) {
+        attributes.add(entry(attribute, conditionalValue));
         return this;
     }
 
@@ -42,6 +44,7 @@ public class Log {
 
     private String buildMessage() {
         return attributes.stream()
+                .filter(entry -> entry.getValue().shouldLog())
                 .map(entry -> String.format("%s=%s", entry.getKey(), wrapWithDoubleQuotesIfRequired(entry.getValue().value())))
                 .collect(joining(" "));
     }
