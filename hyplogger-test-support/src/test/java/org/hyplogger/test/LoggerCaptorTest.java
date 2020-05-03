@@ -8,6 +8,7 @@ import static org.hyplogger.LevelLogger.Levels.ERROR;
 import static org.hyplogger.LevelLogger.error;
 import static org.hyplogger.test.LogMessagePredicates.withAttribute;
 import static org.hyplogger.test.LogMessagePredicates.withSubject;
+import static org.hyplogger.test.LoggerCaptor.capturingAllLogs;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -22,14 +23,14 @@ class LoggerCaptorTest {
 
     @Test
     void captureLog() {
-        LoggerCaptor.capturingAllLogs()
+        capturingAllLogs()
                 .execute(() -> error().subject("test").logTo(logger))
                 .andExpectLogMessage(ERROR, "subject=test");
     }
 
     @Test
     void captureLogWithSubject() {
-        LoggerCaptor.capturingAllLogs()
+        capturingAllLogs()
                 .execute(() -> error()
                         .subject("test")
                         .logTo(logger))
@@ -38,7 +39,7 @@ class LoggerCaptorTest {
 
     @Test
     void captureLogWithAttribute() {
-        LoggerCaptor.capturingAllLogs()
+        capturingAllLogs()
                 .execute(() -> error()
                         .subject("test")
                         .with("attribute1", "value")
@@ -50,7 +51,7 @@ class LoggerCaptorTest {
 
     @Test
     void captureLogAndException() {
-        LoggerCaptor.capturingAllLogs()
+        capturingAllLogs()
                 .execute(() -> {
                     error().subject("test").logTo(logger);
                     throw new RuntimeException();
