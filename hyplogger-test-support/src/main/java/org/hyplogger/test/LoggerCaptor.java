@@ -40,17 +40,24 @@ public class LoggerCaptor implements LogStep {
         capturedLogMessages.add(new LogMessage(level, message));
     }
 
-    public LoggerCaptor andExpectLoggedMessage(LevelLogger.Levels level, String message) {
+    public LoggerCaptor andExpectLogMessage(LevelLogger.Levels level, String message) {
         assertThat(capturedLogMessages)
                 .as("Expected message '%s' with level %s not found.\nThe messages found are:\n%s", message, level, printCapturedMessages())
                 .anyMatch(logMessage -> logMessage.level == level && logMessage.message.equals(message));
         return this;
     }
 
-    public LoggerCaptor andExpectLoggedMessage(String message) {
+    public LoggerCaptor andExpectLogMessage(String message) {
         assertThat(capturedLogMessages)
                 .as("Expected message '%s' not found.\nThe messages found are:\n%s", message, printCapturedMessages())
                 .anyMatch(logMessage -> logMessage.message.equals(message));
+        return this;
+    }
+
+    public LoggerCaptor andExpectLogMessage(LogMessagePredicate predicate) {
+        assertThat(capturedLogMessages)
+                .as("Expected to find message that %s.\nThe messages found are:\n%s", predicate.describe(), printCapturedMessages())
+                .anyMatch(predicate);
         return this;
     }
 
