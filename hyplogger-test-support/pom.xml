@@ -5,14 +5,30 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.hyplogger</groupId>
+        <groupId>com.github.flsusp.hyplogger</groupId>
         <artifactId>hyplogger-parent</artifactId>
-        <version>1.0.0</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>hyplogger-test-support</artifactId>
     <packaging>jar</packaging>
     <name>Hype Logger for Java Applications Test Support</name>
+    <description>Hype Logger for Java Applications Test Support.</description>
+    <url>https://github.com/flsusp/hyplogger</url>
+
+    <developers>
+        <developer>
+            <name>Fabio Santos</name>
+            <email>flsusp@gmail.com</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <build>
         <pluginManagement>
@@ -31,7 +47,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.hyplogger</groupId>
+            <groupId>com.github.flsusp.hyplogger</groupId>
             <artifactId>hyplogger</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -47,4 +63,10 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <scm>
+        <connection>scm:git:git://github.com/flsusp/hyplogger.git</connection>
+        <developerConnection>scm:git:ssh://github.com:flsusp/hyplogger.git</developerConnection>
+        <url>http://github.com/flsusp/hyplogger/tree/master</url>
+    </scm>
 </project>

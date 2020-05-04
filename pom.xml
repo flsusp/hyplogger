@@ -4,16 +4,31 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.hyplogger</groupId>
+    <groupId>com.github.flsusp.hyplogger</groupId>
     <artifactId>hyplogger-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>Hype Logger for Java Applications - Parent</name>
-
+    <description>Parent project for hyplogger.</description>
+    <url>https://github.com/flsusp/hyplogger</url>
     <modules>
         <module>hyplogger</module>
         <module>hyplogger-test-support</module>
     </modules>
+
+    <developers>
+        <developer>
+            <name>Fabio Santos</name>
+            <email>flsusp@gmail.com</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <dependencies>
         <dependency>
@@ -29,4 +44,10 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <scm>
+        <connection>scm:git:git://github.com/flsusp/hyplogger.git</connection>
+        <developerConnection>scm:git:ssh://github.com:flsusp/hyplogger.git</developerConnection>
+        <url>http://github.com/flsusp/hyplogger/tree/master</url>
+    </scm>
 </project>

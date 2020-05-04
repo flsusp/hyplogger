@@ -5,14 +5,30 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.hyplogger</groupId>
+        <groupId>com.github.flsusp.hyplogger</groupId>
         <artifactId>hyplogger-parent</artifactId>
-        <version>1.0.0</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>hyplogger</artifactId>
     <packaging>jar</packaging>
     <name>Hype Logger for Java Applications</name>
+    <description>Hype Logger for Java Applications.</description>
+    <url>https://github.com/flsusp/hyplogger</url>
+
+    <developers>
+        <developer>
+            <name>Fabio Santos</name>
+            <email>flsusp@gmail.com</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <build>
         <pluginManagement>
@@ -27,6 +43,35 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
@@ -48,4 +93,10 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <scm>
+        <connection>scm:git:git://github.com/flsusp/hyplogger.git</connection>
+        <developerConnection>scm:git:ssh://github.com:flsusp/hyplogger.git</developerConnection>
+        <url>http://github.com/flsusp/hyplogger/tree/master</url>
+    </scm>
 </project>
