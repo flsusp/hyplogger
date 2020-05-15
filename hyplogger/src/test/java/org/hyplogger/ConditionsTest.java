@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
+import static org.hyplogger.Conditions.log;
 import static org.hyplogger.Conditions.nonNull;
 import static org.hyplogger.LevelLogger.debug;
 import static org.mockito.Mockito.*;
@@ -19,7 +20,7 @@ class ConditionsTest {
     }
 
     @Nested
-    class WhenConditionIsNonNull {
+    class ForNonNullCondition {
         @Test
         void doNotLogAttributeIfNull() {
             debug().subject("test")
@@ -36,6 +37,27 @@ class ConditionsTest {
                     .logTo(logger);
 
             verify(logger).debug("subject=test attribute=not_null");
+        }
+    }
+
+    @Nested
+    class ForBooleanCondition {
+        @Test
+        void doNotLogAttributeIfFalse() {
+            debug().subject("test")
+                    .with("attribute", log("value").on(false))
+                    .logTo(logger);
+
+            verify(logger).debug("subject=test");
+        }
+
+        @Test
+        void logAttributeIfTrue() {
+            debug().subject("test")
+                    .with("attribute", log("value").on(true))
+                    .logTo(logger);
+
+            verify(logger).debug("subject=test attribute=value");
         }
     }
 }
