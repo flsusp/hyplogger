@@ -144,4 +144,52 @@ class LogTest {
 
         verify(logger).info("subject=test attribute=value1 attribute=value2");
     }
+
+    @Test
+    void logWhenConditionalLoggingIsTrue() {
+        Logger logger = mock(Logger.class);
+        doReturn(true).when(logger).isInfoEnabled();
+
+        info().subject("test")
+                .on(true)
+                .logTo(logger);
+
+        verify(logger).info("subject=test");
+    }
+
+    @Test
+    void doesNotLogWhenConditionalLoggingIsFalse() {
+        Logger logger = mock(Logger.class);
+        doReturn(true).when(logger).isInfoEnabled();
+
+        info().subject("test")
+                .on(false)
+                .logTo(logger);
+
+        verify(logger, never()).info(anyString());
+    }
+
+    @Test
+    void logWhenConditionalLoggingIsSuppliedWithTrue() {
+        Logger logger = mock(Logger.class);
+        doReturn(true).when(logger).isInfoEnabled();
+
+        info().subject("test")
+                .on(() -> true)
+                .logTo(logger);
+
+        verify(logger).info("subject=test");
+    }
+
+    @Test
+    void doesNotLogWhenConditionalLoggingIsSuppliedWithFalse() {
+        Logger logger = mock(Logger.class);
+        doReturn(true).when(logger).isInfoEnabled();
+
+        info().subject("test")
+                .on(() -> false)
+                .logTo(logger);
+
+        verify(logger, never()).info(anyString());
+    }
 }

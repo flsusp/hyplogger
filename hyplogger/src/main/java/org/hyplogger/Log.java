@@ -3,6 +3,7 @@ package org.hyplogger;
 import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.function.BooleanSupplier;
 
 import static java.util.stream.Collectors.joining;
 import static org.hyplogger.Conditions.alwaysLog;
@@ -13,6 +14,7 @@ public class Log {
     private final Collection<LogStep> logSteps;
     private final List<Map.Entry<String, ConditionalValue>> attributes = new ArrayList<>();
     private Exception exception;
+    private BooleanSupplier condition = () -> true;
 
     public Log(LevelLogger.Levels level, Collection<LogStep> logSteps) {
         this.level = level;
@@ -41,8 +43,17 @@ public class Log {
         return this;
     }
 
+    public Log on(boolean condition) {
+        return on(() -> condition);
+    }
+
+    public Log on(BooleanSupplier condition) {
+        this.condition = condition;
+        return this;
+    }
+
     public void logTo(Logger logger) {
-        if (level.isActiveFor(logger)) {
+        if (level.isActiveFor(logger) && this.condition.getAsBoolean()) {
             for (LogStep logStep : logSteps) {
                 logStep.execute(level, buildMessage(), exception, logger);
             }
