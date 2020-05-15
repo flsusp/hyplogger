@@ -33,4 +33,18 @@ public class LogMessagePredicates {
             }
         };
     }
+
+    public static LogMessagePredicate exceptionOfType(Class<? extends Throwable> throwableClass) {
+        return new LogMessagePredicate() {
+            @Override
+            public String describe() {
+                return format("throws exception of type %s", throwableClass.getName());
+            }
+
+            @Override
+            public boolean test(LogMessage logMessage) {
+                return logMessage.throwable != null & throwableClass.isInstance(logMessage.throwable);
+            }
+        };
+    }
 }

@@ -9,7 +9,7 @@ public class LevelLogger {
     private static final Stack<LogStep> logSteps = new Stack<>();
 
     static {
-        logSteps.push((level, message, logger) -> level.log(logger, message));
+        logSteps.push((level, message, throwable, logger) -> level.log(logger, message, throwable));
     }
 
     public static void registerLogStep(LogStep logStep) {
@@ -43,8 +43,12 @@ public class LevelLogger {
     public enum Levels {
         DEBUG {
             @Override
-            void log(Logger logger, String message) {
-                logger.debug(message);
+            void log(Logger logger, String message, Throwable throwable) {
+                if (throwable != null) {
+                    logger.debug(message, throwable);
+                } else {
+                    logger.debug(message);
+                }
             }
 
             @Override
@@ -53,8 +57,12 @@ public class LevelLogger {
             }
         }, INFO {
             @Override
-            void log(Logger logger, String message) {
-                logger.info(message);
+            void log(Logger logger, String message, Throwable throwable) {
+                if (throwable != null) {
+                    logger.info(message, throwable);
+                } else {
+                    logger.info(message);
+                }
             }
 
             @Override
@@ -63,8 +71,12 @@ public class LevelLogger {
             }
         }, WARN {
             @Override
-            void log(Logger logger, String message) {
-                logger.warn(message);
+            void log(Logger logger, String message, Throwable throwable) {
+                if (throwable != null) {
+                    logger.warn(message, throwable);
+                } else {
+                    logger.warn(message);
+                }
             }
 
             @Override
@@ -73,8 +85,12 @@ public class LevelLogger {
             }
         }, ERROR {
             @Override
-            void log(Logger logger, String message) {
-                logger.error(message);
+            void log(Logger logger, String message, Throwable throwable) {
+                if (throwable != null) {
+                    logger.error(message, throwable);
+                } else {
+                    logger.error(message);
+                }
             }
 
             @Override
@@ -83,7 +99,7 @@ public class LevelLogger {
             }
         };
 
-        abstract void log(Logger logger, String message);
+        abstract void log(Logger logger, String message, Throwable throwable);
 
         public abstract boolean isActiveFor(Logger logger);
     }

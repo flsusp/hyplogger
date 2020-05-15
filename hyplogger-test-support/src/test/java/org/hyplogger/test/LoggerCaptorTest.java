@@ -6,8 +6,7 @@ import org.slf4j.Logger;
 
 import static org.hyplogger.LevelLogger.Levels.ERROR;
 import static org.hyplogger.LevelLogger.error;
-import static org.hyplogger.test.LogMessagePredicates.withAttribute;
-import static org.hyplogger.test.LogMessagePredicates.withSubject;
+import static org.hyplogger.test.LogMessagePredicates.*;
 import static org.hyplogger.test.LoggerCaptor.capturingAllLogs;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -35,6 +34,16 @@ class LoggerCaptorTest {
                         .subject("test")
                         .logTo(logger))
                 .andExpectLogMessage(withSubject("test"));
+    }
+
+    @Test
+    void captureLogWithException() {
+        capturingAllLogs()
+                .execute(() -> error()
+                        .subject("test")
+                        .exception(new RuntimeException())
+                        .logTo(logger))
+                .andExpectLogMessage(withSubject("test").and(exceptionOfType(RuntimeException.class)));
     }
 
     @Test

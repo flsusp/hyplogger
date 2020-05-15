@@ -36,8 +36,8 @@ public class LoggerCaptor implements LogStep {
         return assertThat(exception);
     }
 
-    public void execute(LevelLogger.Levels level, String message, Logger logger) {
-        capturedLogMessages.add(new LogMessage(level, message));
+    public void execute(LevelLogger.Levels level, String message, Throwable throwable, Logger logger) {
+        capturedLogMessages.add(new LogMessage(level, message, throwable));
     }
 
     public LoggerCaptor andExpectLogMessage(LevelLogger.Levels level, String message) {
@@ -65,16 +65,5 @@ public class LoggerCaptor implements LogStep {
         return this.capturedLogMessages.stream()
                 .map(logMessage -> String.format("> %s: %s", logMessage.level, logMessage.message))
                 .collect(Collectors.joining("\n"));
-    }
-}
-
-class LogMessage {
-
-    final LevelLogger.Levels level;
-    final String message;
-
-    LogMessage(LevelLogger.Levels level, String message) {
-        this.level = level;
-        this.message = message;
     }
 }

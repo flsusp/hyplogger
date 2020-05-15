@@ -12,6 +12,7 @@ public class Log {
     private final LevelLogger.Levels level;
     private final Collection<LogStep> logSteps;
     private final List<Map.Entry<String, ConditionalValue>> attributes = new ArrayList<>();
+    private Exception exception;
 
     public Log(LevelLogger.Levels level, Collection<LogStep> logSteps) {
         this.level = level;
@@ -35,10 +36,15 @@ public class Log {
         return this;
     }
 
+    public Log exception(Exception exception) {
+        this.exception = exception;
+        return this;
+    }
+
     public void logTo(Logger logger) {
         if (level.isActiveFor(logger)) {
             for (LogStep logStep : logSteps) {
-                logStep.execute(level, buildMessage(), logger);
+                logStep.execute(level, buildMessage(), exception, logger);
             }
         }
     }
