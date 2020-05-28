@@ -7,7 +7,7 @@
     <groupId>com.github.flsusp.hyplogger</groupId>
     <artifactId>hyplogger-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>Hype Logger for Java Applications - Parent</name>
     <description>Parent project for hyplogger.</description>
     <url>https://github.com/flsusp/hyplogger</url>
