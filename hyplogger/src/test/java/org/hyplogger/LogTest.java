@@ -1,8 +1,13 @@
 package org.hyplogger;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InOrder;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hyplogger.LevelLogger.*;
 import static org.mockito.Mockito.*;
 
@@ -191,5 +196,35 @@ class LogTest {
                 .logTo(logger);
 
         verify(logger, never()).info(anyString());
+    }
+
+    @Test
+    void logStopwatchInformationWhenEmbeddedExecution() {
+        Logger logger = mock(Logger.class);
+        doReturn(true).when(logger).isInfoEnabled();
+
+        info().subject("test")
+                .loggingTo(logger)
+                .call(() -> {});
+
+        InOrder order = inOrder(logger);
+        order.verify(logger).info("subject=test status=started");
+        order.verify(logger).info(ArgumentMatchers.matches("subject=test status=finished elapsed=\\d+"));
+    }
+
+    @Test
+    void logStopwatchFailureInformationWhenEmbeddedExecutionFails() {
+        Logger logger = mock(Logger.class);
+        doReturn(true).when(logger).isInfoEnabled();
+
+        assertThatThrownBy(() -> info().subject("test")
+                .loggingTo(logger)
+                .call(() -> {
+                    throw new RuntimeException();
+                })).isInstanceOf(RuntimeException.class);
+
+        InOrder order = inOrder(logger);
+        order.verify(logger).info("subject=test status=started");
+        order.verify(logger).info(ArgumentMatchers.matches("subject=test status=failed elapsed=\\d+"));
     }
 }
