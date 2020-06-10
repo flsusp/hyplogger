@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import static org.hyplogger.Conditions.log;
 import static org.hyplogger.Conditions.nonNull;
 import static org.hyplogger.LevelLogger.debug;
@@ -13,6 +16,12 @@ import static org.mockito.Mockito.*;
 
 class ConditionsTest {
 
+    public static final BooleanSupplier FAILURE_BOOLEAN_CONDITION = () -> {
+        throw new RuntimeException();
+    };
+    public static final Supplier FAILURE_CONDITION = () -> {
+        throw new RuntimeException();
+    };
     Logger logger = mock(Logger.class);
 
     @BeforeEach
@@ -87,12 +96,35 @@ class ConditionsTest {
             @Test
             void doNotLogAttributeIfSuppliedRaisesException() {
                 debug().subject("test")
-                        .with("attribute", log("value").on(ignoringExceptions(() -> {
-                            throw new RuntimeException();
-                        })))
+                        .with("attribute", log("value").on(ignoringExceptions(FAILURE_BOOLEAN_CONDITION)))
                         .logTo(logger);
 
                 verify(logger).debug("subject=test");
+            }
+        }
+    }
+
+    @Nested
+    class ForObjectSupplierCondition {
+
+        @Test
+        void logAttributeIfSuppliedReturns() {
+            debug().subject("test")
+                    .with("attribute", ignoringExceptions(() -> "value"))
+                    .logTo(logger);
+
+            verify(logger).debug("subject=test attribute=value");
+        }
+
+        @Nested
+        class AndIgnoringExceptions {
+            @Test
+            void logNullAttributeIfSuppliedRaisesException() {
+                debug().subject("test")
+                        .with("attribute", ignoringExceptions(FAILURE_CONDITION))
+                        .logTo(logger);
+
+                verify(logger).debug("subject=test attribute=null");
             }
         }
     }

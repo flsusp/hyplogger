@@ -1,6 +1,7 @@
 package org.hyplogger;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public interface ConditionalValue {
 
@@ -35,6 +36,26 @@ class BooleanSupplierCondition implements ConditionalValue {
     @Override
     public boolean shouldLog() {
         return condition.getAsBoolean() && wrappedCondition.shouldLog();
+    }
+}
+
+class ValueSupplierCondition implements ConditionalValue {
+
+    private final Supplier valueSupplier;
+
+    public ValueSupplierCondition(Supplier valueSupplier) {
+        this.valueSupplier = valueSupplier;
+    }
+
+    @Override
+    public String value() {
+        Object value = valueSupplier.get();
+        return value == null ? null : value.toString();
+    }
+
+    @Override
+    public boolean shouldLog() {
+        return true;
     }
 }
 

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import static java.util.stream.Collectors.joining;
 import static org.hyplogger.Conditions.alwaysLog;
@@ -35,6 +36,11 @@ public class Log {
 
     public Log with(String attribute, ConditionalValue conditionalValue) {
         attributes.add(entry(attribute, conditionalValue));
+        return this;
+    }
+
+    public Log with(String attribute, Supplier suppliedValue) {
+        attributes.add(entry(attribute, new ValueSupplierCondition(suppliedValue)));
         return this;
     }
 
