@@ -3,10 +3,9 @@ package org.hyplogger;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hyplogger.LevelLogger.*;
 import static org.mockito.Mockito.*;
@@ -199,13 +198,26 @@ class LogTest {
     }
 
     @Test
+    void failsIfNoLoggerRegistered() {
+        Logger logger = mock(Logger.class);
+        doReturn(true).when(logger).isInfoEnabled();
+
+        assertThatThrownBy(() -> info().subject("test")
+                .call(() -> {
+                }))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Log.logger should be defined");
+    }
+
+    @Test
     void logStopwatchInformationWhenEmbeddedExecution() {
         Logger logger = mock(Logger.class);
         doReturn(true).when(logger).isInfoEnabled();
 
         info().subject("test")
                 .loggingTo(logger)
-                .call(() -> {});
+                .call(() -> {
+                });
 
         InOrder order = inOrder(logger);
         order.verify(logger).info("subject=test status=started");
@@ -221,6 +233,43 @@ class LogTest {
                 .loggingTo(logger)
                 .call(() -> {
                     throw new RuntimeException();
+                })).isInstanceOf(RuntimeException.class);
+
+        InOrder order = inOrder(logger);
+        order.verify(logger).info("subject=test status=started");
+        order.verify(logger).info(ArgumentMatchers.matches("subject=test status=failed elapsed=\\d+"));
+    }
+
+    @Test
+    void logStopwatchInformationWhenEmbeddedExecutionWithResponse() {
+        Logger logger = mock(Logger.class);
+        doReturn(true).when(logger).isInfoEnabled();
+
+        int value = info().subject("test")
+                .loggingTo(logger)
+                .call(() -> {
+                    return 1;
+                });
+
+        assertThat(value).isEqualTo(1);
+
+        InOrder order = inOrder(logger);
+        order.verify(logger).info("subject=test status=started");
+        order.verify(logger).info(ArgumentMatchers.matches("subject=test status=finished elapsed=\\d+"));
+    }
+
+    @Test
+    void logStopwatchFailureInformationWhenEmbeddedExecutionWithResponseFails() {
+        Logger logger = mock(Logger.class);
+        doReturn(true).when(logger).isInfoEnabled();
+
+        assertThatThrownBy(() -> info().subject("test")
+                .loggingTo(logger)
+                .call(() -> {
+                    if (true) {
+                        throw new RuntimeException();
+                    }
+                    return 1;
                 })).isInstanceOf(RuntimeException.class);
 
         InOrder order = inOrder(logger);

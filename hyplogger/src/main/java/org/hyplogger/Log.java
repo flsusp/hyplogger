@@ -116,8 +116,7 @@ public class Log {
             failed = true;
             throw new RuntimeException(e);
         } finally {
-            long end = System.currentTimeMillis();
-            long elapsed = end - start;
+            long elapsed = System.currentTimeMillis() - start;
             registerLog(entry("status", alwaysLog(failed ? "failed" : "finished")), entry("elapsed", alwaysLog(elapsed)));
         }
     }
