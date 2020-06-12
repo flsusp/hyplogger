@@ -67,14 +67,58 @@ This section should list any major frameworks that you built your project using.
 <dependency>
     <groupId>com.github.flsusp.hyplogger</groupId>
     <artifactId>hyplogger</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 
+And to install the test support:
+
+```
+<dependency>
+    <groupId>com.github.flsusp.hyplogger</groupId>
+    <artifactId>hyplogger-test-support</artifactId>
+    <version>0.0.2</version>
+    <scope>test</scope>
+</dependency>
+```
+
+
+
 ## Usage
 
-TBD
+### Simple Example
 
+```
+import static org.hyplogger.LevelLogger.info;
+
+Logger logger = ...; // need to be a SLF4J logger - you can obtain that the way you you think it is appropriate 
+
+info().subject("test")
+    .with("attribute", "value")
+    .logTo(logger);
+```
+
+This is going to generate a log message like (depending, of course, on the configured log formatter):
+
+```
+11:53:26.884 [main] INFO c.g.f.h.LogTest - subject=test attribute=value
+```
+
+To test this log message generation we can use the code snippet bellow
+
+```
+import static org.hyplogger.LevelLogger.info;
+import static org.hyplogger.test.LoggerCaptor.capturingAllLogs;
+import static org.hyplogger.test.LogMessagePredicates.withSubject;
+import static org.hyplogger.test.LogMessagePredicates.withAttribute;
+
+capturingAllLogs()
+    .execute(() -> info().subject("test")
+        .with("attribute", "value")
+        .logTo(logger))
+    .andExpectLogMessage(withSubject("test")
+        .and(withAttribute("attribute", "value")));
+```
 
 ## Roadmap
 
