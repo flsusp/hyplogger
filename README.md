@@ -88,10 +88,10 @@ And to install the test support:
 
 ### Simple Example
 
-```
+```java
 import static org.hyplogger.LevelLogger.info;
 
-Logger logger = ...; // need to be a SLF4J logger - you can obtain that the way you you think it is appropriate 
+Logger logger = ...; // need to be a SLF4J logger - you can obtain that the way you think it is appropriate 
 
 info().subject("test")
     .with("attribute", "value")
@@ -106,7 +106,7 @@ This is going to generate a log message like (depending, of course, on the confi
 
 To test this log message generation we can use the code snippet bellow
 
-```
+```java
 import static org.hyplogger.LevelLogger.info;
 import static org.hyplogger.test.LoggerCaptor.capturingAllLogs;
 import static org.hyplogger.test.LogMessagePredicates.withSubject;
@@ -119,6 +119,29 @@ capturingAllLogs()
     .andExpectLogMessage(withSubject("test")
         .and(withAttribute("attribute", "value")));
 ```
+
+### Creating and Sending Log Messages
+
+The entry points for creating a log message are the static methods bellow:
+
+```java
+org.hyplogger.LevelLogger.level(Levels)
+org.hyplogger.LevelLogger.debug()
+org.hyplogger.LevelLogger.info()
+org.hyplogger.LevelLogger.warn()
+org.hyplogger.LevelLogger.error()
+```
+
+These methods start the creation of the log message. After creating the log message it must be sent to a logger to be
+properly registered in the underlying logging library throw SLF4J integration. The simplest examples use the method
+`void org.hyplogger.Log.logTo(Logger)` to send the message away. There are other alternatives for when you need to encapsulate
+some code execution that we are going to check further in this documentation. But it is worth mention that, if the log message
+is not sent to the underlying logging library, no log message is going to be generated at all. So, the call to the method referenced
+above is critical for the correct usage of hyplogger. 
+
+### Encapsulating Code Blocks
+
+TBD
 
 ## Roadmap
 
