@@ -28,6 +28,13 @@ class LoggerCaptorTest {
     }
 
     @Test
+    void expectsEmptyLogMessages() {
+        capturingAllLogs()
+                .execute(() -> {})
+                .andDoesNotExpectLogMessages();
+    }
+
+    @Test
     void captureLogWithSubject() {
         capturingAllLogs()
                 .execute(() -> error()

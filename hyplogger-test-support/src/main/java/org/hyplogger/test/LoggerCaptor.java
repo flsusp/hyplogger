@@ -66,4 +66,8 @@ public class LoggerCaptor implements LogStep {
                 .map(logMessage -> String.format("> %s: %s", logMessage.level, logMessage.message))
                 .collect(Collectors.joining("\n"));
     }
+
+    public void andDoesNotExpectLogMessages() {
+        assertThat(capturedLogMessages).isEmpty();
+    }
 }
